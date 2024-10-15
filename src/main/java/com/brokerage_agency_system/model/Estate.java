@@ -1,5 +1,7 @@
 package com.brokerage_agency_system.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,24 +17,25 @@ import java.util.List;
 public class Estate {
 
     @Id
-    @Column(length = 36) // UUID String length is 36 characters
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "estate_id")
+//    @JsonBackReference
     private List<Image> images;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 
@@ -45,6 +48,18 @@ public class Estate {
     @Column(nullable = false)
     private Long price;
 
+    @Override
+    public String toString() {
+        return "Estate{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                ", description='" + description + '\'' +
+                ", coordinates='" + coordinates + '\'' +
+                ", price=" + price +
+                ", comments=" + comments +
+                // Exclude user, owner, images to avoid lazy initialization issue
+                '}';
+    }
 }
 
 

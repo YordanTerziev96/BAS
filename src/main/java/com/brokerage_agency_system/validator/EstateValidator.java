@@ -10,7 +10,9 @@ import com.brokerage_agency_system.repository.OwnerRepository;
 import com.brokerage_agency_system.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @AllArgsConstructor
@@ -21,16 +23,26 @@ public class EstateValidator {
     OwnerRepository ownerRepository;
     EstateRepository estateRepository;
 
-    public void validateForCreate(EstateCreateTO estateCreateTO) {
+    public Estate validateForCreate(EstateCreateTO estateCreateTO) {
         if (estateCreateTO == null) {
             throw new NullPointerException("Empty Estate object");
         }
-        if (estateCreateTO.getUser() == null) {
-            throw new NullPointerException("Empty User object");
+        if (estateCreateTO.getUsername().isEmpty()) {
+            throw new NullPointerException("Empty username.");
         }
-        if (estateCreateTO.getOwner() == null) {
-            throw new NullPointerException("Empty Owner object");
+        var existingUser = userRepository.findByUsername(estateCreateTO.getUsername());
+        if (existingUser.isEmpty()) {
+            throw new NoSuchElementException("There is no such user with username: " + estateCreateTO.getUsername());
         }
+        if (estateCreateTO.getOwnerId() == null) {
+            throw new NullPointerException("Empty owner id");
+        }
+        var existingOwner = ownerRepository.findById(String.valueOf(estateCreateTO.getOwnerId()));
+        if (existingOwner.isEmpty()) {
+            throw new NoSuchElementException("There is no such owner with id: " + estateCreateTO.getOwnerId());
+        }
+
+        return Estate.builder().user(existingUser.get()).owner(existingOwner.get()).build();
     }
 
     public void validateForCreateOwner(OwnerCreateTO createTO) {
@@ -68,6 +80,28 @@ public class EstateValidator {
         var existingOwner = ownerRepository.findById(String.valueOf(estateTO.getOwner().getId()));
         if (existingOwner.isEmpty()) {
             throw new NoSuchElementException("There is no such owner with id: " + estateTO.getOwner().getId());
+        }
+        return estate.get();
+    }
+
+    public Estate validateFile(List<MultipartFile> file, Long estateId) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Empty file.");
+        }
+        var estate = estateRepository.findById(String.valueOf(estateId));
+        if (estate.isEmpty()) {
+            throw new NoSuchElementException("There is no such estate with id: " + estateId);
+        }
+        return estate.get();
+    }
+
+    public Estate validateEstate(Long estateId) {
+        if (estateId == null) {
+            throw new IllegalArgumentException("Empty object.");
+        }
+        var estate = estateRepository.findById(String.valueOf(estateId));
+        if (estate.isEmpty()) {
+            throw new NoSuchElementException("There is no such estate with id: " + estateId);
         }
         return estate.get();
     }

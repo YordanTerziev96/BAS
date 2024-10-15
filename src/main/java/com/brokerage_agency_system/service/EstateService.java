@@ -4,21 +4,30 @@ import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
+import com.brokerage_agency_system.model.Image;
 import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.repository.EstateRepository;
 import com.brokerage_agency_system.repository.OwnerRepository;
+import com.brokerage_agency_system.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class EstateService {
 
     private final EstateRepository estateRepository;
     private final OwnerRepository ownerRepository;
+    private final UserRepository userRepository;
 
     public List<Estate> getAllEstates() {
         return estateRepository.findAll();
@@ -37,19 +46,15 @@ public class EstateService {
         return ownerRepository.save(owner);
     }
 
-    public Estate saveEstate(EstateCreateTO estateCreateTO) {
+    public Estate saveEstate(Estate estate, EstateCreateTO createTO) {
 
-        var images = estateCreateTO.getImages();
+        estate.setStatus(createTO.getStatus());
+        estate.setDescription(createTO.getDescription());
+        estate.setCoordinates(createTO.getCoordinates());
+        estate.setComments(createTO.getComments());
+        estate.setPrice(createTO.getPrice());
+        estate.setImages(new ArrayList<>());
 
-        var estate = Estate.builder()
-                .owner(estateCreateTO.getOwner())
-                .images(estateCreateTO.getImages())
-                .price(estateCreateTO.getPrice())
-                .comments(estateCreateTO.getComments())
-                .coordinates(estateCreateTO.getCoordinates())
-                .description(estateCreateTO.getDescription())
-                .status(estateCreateTO.getStatus())
-                .user(estateCreateTO.getUser()).build();
         return estateRepository.save(estate);
     }
 
@@ -68,7 +73,6 @@ public class EstateService {
     public Estate updateEstate(Estate estate, EstateTO estateTO) {
         estate.setOwner(estateTO.getOwner());
         estate.setComments(estateTO.getComments());
-        estate.setImages(estateTO.getImages());
         estate.setPrice(estateTO.getPrice());
         estate.setDescription(estateTO.getDescription());
         estate.setCoordinates(estateTO.getCoordinates());
@@ -79,5 +83,20 @@ public class EstateService {
 
     public Optional<Estate> getEstateById(String estateId) {
         return estateRepository.findById(estateId);
+    }
+
+    public Estate saveImages(List<MultipartFile> images, Estate estate) throws IOException {
+        for (MultipartFile i : images) {
+            var image = Image.builder()
+                    .data(i.getBytes())
+                    .build();
+
+            estate.getImages().add(image);
+        }
+        return estateRepository.save(estate);
+    }
+
+    public List<Image> getImages(Estate estate) {
+        return estate.getImages();
     }
 }
