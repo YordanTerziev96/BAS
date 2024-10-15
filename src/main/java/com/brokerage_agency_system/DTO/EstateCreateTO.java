@@ -18,15 +18,13 @@ public class EstateCreateTO {
     @NotBlank(message = "Status cannot be none")
     private String status;
 
-    @NotBlank(message = "User cannot be none")
-    private User user;
-
-    private List<Image> images;
+    @NotBlank(message = "Username cannot be none")
+    private String username;
 
     private String description;
 
-    @NotBlank(message = "Owner cannot be none")
-    private Owner owner;
+    @NotBlank(message = "Owner id cannot be none")
+    private Long ownerId;
 
     @NotBlank(message = "Coordinates cannot be none")
     private String coordinates;

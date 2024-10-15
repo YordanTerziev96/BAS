@@ -18,8 +18,6 @@ public class EstateTO {
 
     private String status;
 
-    private List<Image> images;
-
     private String description;
 
     private Owner owner;

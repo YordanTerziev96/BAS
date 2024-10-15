@@ -16,9 +16,8 @@ public class Image {
     private Long id;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "data", nullable = false)
     private byte[] data;
-
-    // Getters, setters, and other fields/methods
 }
 

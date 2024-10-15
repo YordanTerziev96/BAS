@@ -3,22 +3,26 @@ package com.brokerage_agency_system.controller;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
-import com.brokerage_agency_system.DTO.UserTO;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.model.Owner;
-import com.brokerage_agency_system.model.User;
 import com.brokerage_agency_system.service.EstateService;
 import com.brokerage_agency_system.validator.EstateValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -89,14 +93,43 @@ public class EstateController {
         }
     }
 
-    @PostMapping // POST endpoint to create a new estate
-    public ResponseEntity<Estate> createEstate(@RequestBody EstateCreateTO createTO) {
-        validator.validateForCreate(createTO);
-        Estate savedEstate = estateService.saveEstate(createTO);
+    @PostMapping
+    public ResponseEntity<?> createEstate(@RequestBody EstateCreateTO createTO) {
+        try {
+            var validatedEstate = validator.validateForCreate(createTO);
 
-        return ResponseEntity.status(201).body(savedEstate);
+            Estate savedEstate = estateService.saveEstate(validatedEstate, createTO);
+
+            return ResponseEntity.status(201).body(savedEstate);
+        } catch (NoSuchElementException | NullPointerException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImages(@RequestParam("file") List<MultipartFile> images,
+                                        @RequestParam("estateId") Long estateId) {
+        try {
+            var estate = validator.validateFile(images, estateId);
+            var updatedEstate = estateService.saveImages(images, estate);
+            return ResponseEntity.ok(updatedEstate);
+        } catch (IllegalArgumentException | NoSuchElementException | IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getImages")
+    public ResponseEntity<?> getImages(@RequestParam("estateId") Long estateId) {
+
+        try {
+            var validatedEstate = validator.validateEstate(estateId);
+            var images = estateService.getImages(validatedEstate);
+            return ResponseEntity.ok(images);
+        } catch (IllegalArgumentException | NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     //TODO Filter estates
-    //TODO Add api for uploading images
+    //TODO Delete endpoints
 }
