@@ -78,7 +78,7 @@ public class EstateController {
             var updatedEstate = estateService.updateEstate(validatedEstate, estateTO);
             return ResponseEntity.ok(updatedEstate);
         } catch (NullPointerException | NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage() + "lalalalla");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -114,7 +114,7 @@ public class EstateController {
             var updatedEstate = estateService.saveImages(images, estate);
             return ResponseEntity.ok(updatedEstate);
         } catch (IllegalArgumentException | NoSuchElementException | IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -126,7 +126,7 @@ public class EstateController {
             var images = estateService.getImages(validatedEstate);
             return ResponseEntity.ok(images);
         } catch (IllegalArgumentException | NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

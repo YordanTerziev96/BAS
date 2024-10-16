@@ -1,10 +1,7 @@
 package com.brokerage_agency_system.DTO;
 
 
-import com.brokerage_agency_system.model.Image;
 import com.brokerage_agency_system.model.Owner;
-import com.brokerage_agency_system.model.User;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -20,7 +17,7 @@ public class EstateTO {
 
     private String description;
 
-    private Owner owner;
+    private Long ownerId;
 
     private String coordinates;
 
