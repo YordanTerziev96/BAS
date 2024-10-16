@@ -29,7 +29,6 @@ public class Estate {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "estate_id")
-//    @JsonBackReference
     private List<Image> images;
 
     @Column(columnDefinition = "TEXT")
@@ -42,7 +41,7 @@ public class Estate {
     @Column(columnDefinition = "TEXT")
     private String coordinates;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private List<String> comments;
 
     @Column(nullable = false)
@@ -57,7 +56,6 @@ public class Estate {
                 ", coordinates='" + coordinates + '\'' +
                 ", price=" + price +
                 ", comments=" + comments +
-                // Exclude user, owner, images to avoid lazy initialization issue
                 '}';
     }
 }

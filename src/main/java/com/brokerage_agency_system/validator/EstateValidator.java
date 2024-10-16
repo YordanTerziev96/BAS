@@ -74,12 +74,13 @@ public class EstateValidator {
         if (estate.isEmpty()) {
             throw new NoSuchElementException("There is no such estate with id: " + estateId);
         }
-        if(estate.get().getOwner() == null) {
-            throw new NullPointerException("Empty Owner object");
-        }
-        var existingOwner = ownerRepository.findById(String.valueOf(estateTO.getOwner().getId()));
-        if (existingOwner.isEmpty()) {
-            throw new NoSuchElementException("There is no such owner with id: " + estateTO.getOwner().getId());
+        if (estateTO.getOwnerId() != null) {
+            var existingOwner = ownerRepository.findById(String.valueOf(estateTO.getOwnerId()));
+            if (existingOwner.isEmpty()) {
+                throw new NoSuchElementException("There is no such owner with id: " + estateTO.getOwnerId());
+            }
+            // I don't like it, but for now is okay.
+            estate.get().setOwner(existingOwner.get());
         }
         return estate.get();
     }

@@ -71,12 +71,11 @@ public class EstateService {
     }
 
     public Estate updateEstate(Estate estate, EstateTO estateTO) {
-        estate.setOwner(estateTO.getOwner());
-        estate.setComments(estateTO.getComments());
-        estate.setPrice(estateTO.getPrice());
-        estate.setDescription(estateTO.getDescription());
-        estate.setCoordinates(estateTO.getCoordinates());
-        estate.setStatus(estateTO.getStatus());
+        Optional.ofNullable(estateTO.getStatus()).ifPresent(estate::setStatus);
+        Optional.ofNullable(estateTO.getDescription()).ifPresent(estate::setDescription);
+        Optional.ofNullable(estateTO.getCoordinates()).ifPresent(estate::setCoordinates);
+        Optional.ofNullable(estateTO.getComments()).ifPresent(estate::setComments);
+        Optional.ofNullable(estateTO.getPrice()).ifPresent(estate::setPrice);
 
         return estateRepository.save(estate);
     }
