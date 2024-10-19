@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping // POST endpoint to create a new user
+    @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserCreateTO userCreateTO) {
         try {
             validator.validateForCreate(userCreateTO);
@@ -57,5 +57,14 @@ public class UserController {
         }
     }
 
-    //TODO Delete endpoints
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+        try {
+            var existingUser = validator.validateForDelete(userId);
+            userService.deleteUser(existingUser);
+            return ResponseEntity.accepted().body("Deleted user with id: " + userId);
+        } catch (NullPointerException | NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

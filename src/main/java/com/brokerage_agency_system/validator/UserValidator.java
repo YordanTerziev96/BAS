@@ -40,4 +40,15 @@ public class UserValidator {
         }
         return existingUser.get();
     }
+
+    public User validateForDelete(Long userId) {
+        if (userId == null) {
+            throw new NullPointerException("Empty object");
+        }
+        var existingUser = repository.findById(userId);
+        if (existingUser.isEmpty()) {
+            throw new NoSuchElementException("There is no such user with username: " + userId);
+        }
+        return existingUser.get();
+    }
 }
