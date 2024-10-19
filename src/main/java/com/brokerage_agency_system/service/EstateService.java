@@ -1,5 +1,6 @@
 package com.brokerage_agency_system.service;
 
+import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
 import com.brokerage_agency_system.model.Estate;
@@ -19,6 +20,7 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -53,6 +55,7 @@ public class EstateService {
         estate.setCoordinates(createTO.getCoordinates());
         estate.setComments(createTO.getComments());
         estate.setPrice(createTO.getPrice());
+        estate.setNeighbourhood(createTO.getNeighbourhood());
         estate.setImages(new ArrayList<>());
 
         return estateRepository.save(estate);
@@ -76,6 +79,7 @@ public class EstateService {
         Optional.ofNullable(estateTO.getCoordinates()).ifPresent(estate::setCoordinates);
         Optional.ofNullable(estateTO.getComments()).ifPresent(estate::setComments);
         Optional.ofNullable(estateTO.getPrice()).ifPresent(estate::setPrice);
+        Optional.ofNullable(estateTO.getNeighbourhood()).ifPresent(estate::setNeighbourhood);
 
         return estateRepository.save(estate);
     }
@@ -97,5 +101,16 @@ public class EstateService {
 
     public List<Image> getImages(Estate estate) {
         return estate.getImages();
+    }
+
+    public List<Estate> filterEstates(EstateFilterDTO filterDTO) {
+        List<Estate> estates = estateRepository.findAll();
+        return estates.stream()
+                .filter(estate -> filterDTO.getStatus() == null || estate.getStatus().equals(filterDTO.getStatus()))
+                .filter(estate -> filterDTO.getOwnerId() == null || estate.getOwner().getId().equals(filterDTO.getOwnerId()))
+                .filter(estate -> filterDTO.getMinPrice() == null || estate.getPrice() >= filterDTO.getMinPrice())
+                .filter(estate -> filterDTO.getMaxPrice() == null || estate.getPrice() <= filterDTO.getMaxPrice())
+                .filter(estate -> filterDTO.getNeighbourhood() == null || estate.getNeighbourhood().equals(filterDTO.getNeighbourhood()))
+                .collect(Collectors.toList());
     }
 }

@@ -1,7 +1,6 @@
 package com.brokerage_agency_system.DTO;
 
 
-import com.brokerage_agency_system.model.Owner;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -24,4 +23,6 @@ public class EstateTO {
     private List<String> comments;
 
     private Long price;
+
+    private String neighbourhood;
 }

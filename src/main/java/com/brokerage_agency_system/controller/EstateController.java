@@ -1,6 +1,7 @@
 package com.brokerage_agency_system.controller;
 
 import com.brokerage_agency_system.DTO.EstateCreateTO;
+import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
 import com.brokerage_agency_system.model.Estate;
@@ -80,6 +81,11 @@ public class EstateController {
         } catch (NullPointerException | NoSuchElementException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> filterEstates(@RequestBody EstateFilterDTO filter) {
+        return ResponseEntity.ok().body(estateService.filterEstates(filter));
     }
 
     @PutMapping("/owner/{ownerId}")
