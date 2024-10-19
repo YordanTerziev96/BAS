@@ -47,6 +47,9 @@ public class Estate {
     @Column(nullable = false)
     private Long price;
 
+    @Column(nullable = false)
+    private String neighbourhood;
+
     @Override
     public String toString() {
         return "Estate{" +

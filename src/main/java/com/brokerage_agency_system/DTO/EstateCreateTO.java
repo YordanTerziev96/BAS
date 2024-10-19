@@ -33,4 +33,7 @@ public class EstateCreateTO {
 
     @NotBlank(message = "Price cannot be none")
     private Long price;
+
+    @NotBlank(message = "Neighbourhood cannot be none")
+    private String neighbourhood;
 }
