@@ -4,8 +4,10 @@ import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
 import com.brokerage_agency_system.model.Estate;
+import com.brokerage_agency_system.model.Image;
 import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.repository.EstateRepository;
+import com.brokerage_agency_system.repository.ImageRepository;
 import com.brokerage_agency_system.repository.OwnerRepository;
 import com.brokerage_agency_system.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ public class EstateValidator {
     UserRepository userRepository;
     OwnerRepository ownerRepository;
     EstateRepository estateRepository;
+    ImageRepository imageRepository;
 
     public Estate validateForCreate(EstateCreateTO estateCreateTO) {
         if (estateCreateTO == null) {
@@ -66,6 +69,17 @@ public class EstateValidator {
         return existingOwner.get();
     }
 
+    public Owner validateForDeleteOwner(Long ownerId) {
+        if (ownerId == null) {
+            throw new NullPointerException("Empty object");
+        }
+        var existingOwner = ownerRepository.findById(String.valueOf(ownerId));
+        if (existingOwner.isEmpty()) {
+            throw new NoSuchElementException("There is no such owner with id: " + ownerId);
+        }
+        return existingOwner.get();
+    }
+
     public Estate validateForUpdate(String estateId, EstateTO estateTO) {
         if (estateId.isBlank() || estateTO == null) {
             throw new NullPointerException("Empty object");
@@ -94,6 +108,17 @@ public class EstateValidator {
             throw new NoSuchElementException("There is no such estate with id: " + estateId);
         }
         return estate.get();
+    }
+
+    public Image validateForDeleteFile(Long fileId) {
+        if (fileId == null) {
+            throw new NullPointerException("Empty object");
+        }
+        var existingImage = imageRepository.findById(String.valueOf(fileId));
+        if (existingImage.isEmpty()) {
+            throw new NoSuchElementException("There is no such file with id: " + fileId);
+        }
+        return existingImage.get();
     }
 
     public Estate validateEstate(Long estateId) {

@@ -8,6 +8,7 @@ import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.model.Image;
 import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.repository.EstateRepository;
+import com.brokerage_agency_system.repository.ImageRepository;
 import com.brokerage_agency_system.repository.OwnerRepository;
 import com.brokerage_agency_system.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,7 @@ public class EstateService {
 
     private final EstateRepository estateRepository;
     private final OwnerRepository ownerRepository;
-    private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
 
     public List<Estate> getAllEstates() {
         return estateRepository.findAll();
@@ -112,5 +113,18 @@ public class EstateService {
                 .filter(estate -> filterDTO.getMaxPrice() == null || estate.getPrice() <= filterDTO.getMaxPrice())
                 .filter(estate -> filterDTO.getNeighbourhood() == null || estate.getNeighbourhood().equals(filterDTO.getNeighbourhood()))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteOwner(Owner ownerToDelete) {
+        ownerRepository.delete(ownerToDelete);
+    }
+
+    public void deleteFile(Image imageToDelete) {
+        imageRepository.delete(imageToDelete);
+    }
+
+    public void deleteEstate(Estate estateToDelete) {
+        imageRepository.deleteAll(estateToDelete.getImages());
+        estateRepository.delete(estateToDelete);
     }
 }

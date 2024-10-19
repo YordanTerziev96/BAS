@@ -42,6 +42,53 @@ public class EstateController {
         return estateService.getAllEstates();
     }
 
+    @GetMapping("/{estateId}")
+    public ResponseEntity<?> getEstate(@RequestParam String estateId) {
+        var estate = estateService.getEstateById(estateId);
+
+        return estate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createEstate(@RequestBody EstateCreateTO createTO) {
+        try {
+            var validatedEstate = validator.validateForCreate(createTO);
+
+            Estate savedEstate = estateService.saveEstate(validatedEstate, createTO);
+
+            return ResponseEntity.status(201).body(savedEstate);
+        } catch (NoSuchElementException | NullPointerException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{estateId}")
+    public ResponseEntity<?> updateEstate(@PathVariable String estateId, @RequestBody EstateTO estateTO) {
+        try {
+            var validatedEstate = validator.validateForUpdate(estateId, estateTO);
+            var updatedEstate = estateService.updateEstate(validatedEstate, estateTO);
+            return ResponseEntity.ok(updatedEstate);
+        } catch (NullPointerException | NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> filterEstates(@RequestBody EstateFilterDTO filter) {
+        return ResponseEntity.ok().body(estateService.filterEstates(filter));
+    }
+
+    @DeleteMapping("/{estateId}")
+    public ResponseEntity<?> deleteEstate(@PathVariable Long estateId) {
+        try {
+            var existingEstate = validator.validateEstate(estateId);
+            estateService.deleteEstate(existingEstate);
+            return ResponseEntity.accepted().body("Deleted estate with id: " + estateId);
+        } catch (NullPointerException | NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/owners")
     public List<Owner> getAllOwners() {
         return estateService.getAllOwners();
@@ -65,29 +112,6 @@ public class EstateController {
         }
     }
 
-    @GetMapping("/{estateId}")
-    public ResponseEntity<?> getEstate(@RequestParam String estateId) {
-        var estate = estateService.getEstateById(estateId);
-
-        return estate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
-    @PutMapping("/{estateId}")
-    public ResponseEntity<?> updateEstate(@PathVariable String estateId, @RequestBody EstateTO estateTO) {
-        try {
-            var validatedEstate = validator.validateForUpdate(estateId, estateTO);
-            var updatedEstate = estateService.updateEstate(validatedEstate, estateTO);
-            return ResponseEntity.ok(updatedEstate);
-        } catch (NullPointerException | NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/filter")
-    public ResponseEntity<?> filterEstates(@RequestBody EstateFilterDTO filter) {
-        return ResponseEntity.ok().body(estateService.filterEstates(filter));
-    }
-
     @PutMapping("/owner/{ownerId}")
     public ResponseEntity<?> updateOwner(@PathVariable String ownerId, @RequestBody OwnerCreateTO ownerCreateTO) {
         try {
@@ -99,15 +123,13 @@ public class EstateController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> createEstate(@RequestBody EstateCreateTO createTO) {
+    @DeleteMapping("/owner/{ownerId}")
+    public ResponseEntity<?> deleteOwner(@PathVariable Long ownerId) {
         try {
-            var validatedEstate = validator.validateForCreate(createTO);
-
-            Estate savedEstate = estateService.saveEstate(validatedEstate, createTO);
-
-            return ResponseEntity.status(201).body(savedEstate);
-        } catch (NoSuchElementException | NullPointerException e) {
+            var existingOwner = validator.validateForDeleteOwner(ownerId);
+            estateService.deleteOwner(existingOwner);
+            return ResponseEntity.accepted().body("Deleted owner with id: " + ownerId);
+        } catch (NullPointerException | NoSuchElementException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -124,7 +146,7 @@ public class EstateController {
         }
     }
 
-    @GetMapping("/getImages")
+    @GetMapping("/images")
     public ResponseEntity<?> getImages(@RequestParam("estateId") Long estateId) {
 
         try {
@@ -136,6 +158,14 @@ public class EstateController {
         }
     }
 
-    //TODO Filter estates
-    //TODO Delete endpoints
+    @DeleteMapping("/images/{imageId}")
+    public ResponseEntity<?> deleteImage(@PathVariable Long imageId) {
+        try {
+            var existingImage = validator.validateForDeleteFile(imageId);
+            estateService.deleteFile(existingImage);
+            return ResponseEntity.accepted().body("Deleted image with id: " + imageId);
+        } catch (NullPointerException | NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
