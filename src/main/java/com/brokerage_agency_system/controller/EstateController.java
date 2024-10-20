@@ -47,6 +47,7 @@ public class EstateController {
     }
 
     @GetMapping("/{estateId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> getEstate(@RequestParam String estateId) {
         var estate = estateService.getEstateById(estateId);
 

@@ -105,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
                 .phone(userCreateTO.getPhone())
                 .description(userCreateTO.getDescription())
                 .enabled(true)
-                .roles(Set.of(roleRepository.findByName(RoleEnum.USER)))
+                .roles(Set.of(roleRepository.findByName(RoleEnum.ROLE_USER)))
                 .build();
     }
 }
