@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<ApiResponseDTO<?>> signInUser(SignInRequestDTO signInRequestDTO) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signInRequestDTO.getEmail(), signInRequestDTO.getPassword()));
+                new UsernamePasswordAuthenticationToken(signInRequestDTO.getUsername(), signInRequestDTO.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);

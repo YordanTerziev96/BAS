@@ -12,24 +12,6 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponseDTO<?>> MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
-
-        List<String> errorMessage = new ArrayList<>();
-
-        exception.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMessage.add(error.getDefaultMessage());
-        });
-        return ResponseEntity
-                .badRequest()
-                .body(
-                        ApiResponseDTO.builder()
-                                .isSuccess(false)
-                                .message("Registration Failed: Please provide valid data.")
-                                .response(errorMessage)
-                                .build()
-                );
-    }
 
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ResponseEntity<ApiResponseDTO<?>> UserAlreadyExistsExceptionHandler(UserAlreadyExistsException exception) {
