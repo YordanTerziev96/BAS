@@ -31,6 +31,7 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/estates")
+@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 public class EstateController {
 
     private final EstateService estateService;
@@ -41,13 +42,11 @@ public class EstateController {
      * @return a list of all estates.
      */
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Estate> getAllEstates() {
         return estateService.getAllEstates();
     }
 
     @GetMapping("/{estateId}")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> getEstate(@RequestParam String estateId) {
         var estate = estateService.getEstateById(estateId);
 

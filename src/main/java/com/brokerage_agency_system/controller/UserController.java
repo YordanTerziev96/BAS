@@ -18,6 +18,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserController {
 
     private final UserValidator validator;
@@ -31,7 +32,6 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
