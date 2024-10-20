@@ -3,13 +3,14 @@ package com.brokerage_agency_system.service;
 import com.brokerage_agency_system.DTO.ApiResponseDTO;
 import com.brokerage_agency_system.DTO.SignInRequestDTO;
 import com.brokerage_agency_system.DTO.SignInResponseDTO;
-import com.brokerage_agency_system.DTO.SignUpRequestDTO;
+import com.brokerage_agency_system.DTO.UserCreateTO;
+import com.brokerage_agency_system.exception.PasswordMismatchException;
 import com.brokerage_agency_system.exception.RoleNotFoundException;
 import com.brokerage_agency_system.exception.UserAlreadyExistsException;
-import com.brokerage_agency_system.model.Role;
 import com.brokerage_agency_system.model.User;
+import com.brokerage_agency_system.repository.RoleRepository;
 import com.brokerage_agency_system.security.JwtUtils;
-import com.brokerage_agency_system.security.RoleFactory;
+import com.brokerage_agency_system.security.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,25 +35,28 @@ public class AuthServiceImpl implements AuthService{
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private RoleFactory roleFactory;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
-    public ResponseEntity<ApiResponseDTO<?>> signUpUser(SignUpRequestDTO signUpRequestDTO)
-            throws UserAlreadyExistsException, RoleNotFoundException {
-        if (userService.existsByEmail(signUpRequestDTO.getEmail())) {
+    public ResponseEntity<ApiResponseDTO<?>> signUpUser(UserCreateTO userCreateTO)
+            throws UserAlreadyExistsException, RoleNotFoundException, PasswordMismatchException {
+        //TODO - I think there was a way to create a custom validator that worked with the @Valid annotation.
+        if (userService.existsByEmail(userCreateTO.getEmail())) {
             throw new UserAlreadyExistsException("Registration Failed: Provided email already exists. Try sign in or provide another email.");
         }
-        if (userService.existsByUsername(signUpRequestDTO.getUsername())) {
+        if (userService.existsByUsername(userCreateTO.getUsername())) {
             throw new UserAlreadyExistsException("Registration Failed: Provided username already exists. Try sign in or provide another username.");
         }
+        if(!userCreateTO.getPassword().equals(userCreateTO.getRepeatedPassword())){
+            throw new PasswordMismatchException("Registration Failed: Passwords don't match.");
+        }
 
-        User user = createUser(signUpRequestDTO);
+        User user = createUser(userCreateTO);
         userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponseDTO.builder()
@@ -94,28 +97,15 @@ public class AuthServiceImpl implements AuthService{
         );
     }
 
-    private User createUser(SignUpRequestDTO signUpRequestDTO) throws RoleNotFoundException {
+    private User createUser(UserCreateTO userCreateTO) throws RoleNotFoundException {
         return User.builder()
-                .email(signUpRequestDTO.getEmail())
-                .username(signUpRequestDTO.getUsername())
-                .password(passwordEncoder.encode(signUpRequestDTO.getPassword()))
-                .phone(signUpRequestDTO.getPhone())
-                .description(signUpRequestDTO.getDescription())
+                .email(userCreateTO.getEmail())
+                .username(userCreateTO.getUsername())
+                .password(passwordEncoder.encode(userCreateTO.getPassword()))
+                .phone(userCreateTO.getPhone())
+                .description(userCreateTO.getDescription())
                 .enabled(true)
-                .roles(determineRoles(signUpRequestDTO.getRoles()))
+                .roles(Set.of(roleRepository.findByName(RoleEnum.USER)))
                 .build();
-    }
-
-    private Set<Role> determineRoles(Set<String> strRoles) throws RoleNotFoundException {
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            roles.add(roleFactory.getInstance("user"));
-        } else {
-            for (String role : strRoles) {
-                roles.add(roleFactory.getInstance(role));
-            }
-        }
-        return roles;
     }
 }

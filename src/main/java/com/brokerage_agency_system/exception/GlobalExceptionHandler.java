@@ -54,4 +54,16 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+
+    @ExceptionHandler(value = PasswordMismatchException.class)
+    public ResponseEntity<ApiResponseDTO<?>> PasswordMismatchExceptionHandler(PasswordMismatchException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ApiResponseDTO.builder()
+                                .isSuccess(false)
+                                .message(exception.getMessage())
+                                .build()
+                );
+    }
 }

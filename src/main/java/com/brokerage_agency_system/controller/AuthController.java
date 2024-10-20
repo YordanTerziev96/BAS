@@ -2,7 +2,8 @@ package com.brokerage_agency_system.controller;
 
 import com.brokerage_agency_system.DTO.ApiResponseDTO;
 import com.brokerage_agency_system.DTO.SignInRequestDTO;
-import com.brokerage_agency_system.DTO.SignUpRequestDTO;
+import com.brokerage_agency_system.DTO.UserCreateTO;
+import com.brokerage_agency_system.exception.PasswordMismatchException;
 import com.brokerage_agency_system.exception.RoleNotFoundException;
 import com.brokerage_agency_system.exception.UserAlreadyExistsException;
 import com.brokerage_agency_system.service.AuthService;
@@ -23,9 +24,9 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseDTO<?>> registerUser(@RequestBody @Valid SignUpRequestDTO signUpRequestDTO)
-            throws UserAlreadyExistsException, RoleNotFoundException {
-        return authService.signUpUser(signUpRequestDTO);
+    public ResponseEntity<ApiResponseDTO<?>> registerUser(@RequestBody @Valid UserCreateTO userCreateTO)
+            throws UserAlreadyExistsException, RoleNotFoundException, PasswordMismatchException {
+        return authService.signUpUser(userCreateTO);
     }
 
     @PostMapping("/signin")
