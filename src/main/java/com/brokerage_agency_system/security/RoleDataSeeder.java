@@ -22,8 +22,8 @@ public class RoleDataSeeder {
 
         List<RoleEnum> roles = Arrays.stream(RoleEnum.values()).toList();
 
-        for(RoleEnum roleEnum: roles) {
-            if (roleRepository.findByName(roleEnum)==null) {
+        for (RoleEnum roleEnum : roles) {
+            if (roleRepository.findByName(roleEnum) == null) {
                 roleRepository.save(new Role(roleEnum));
             }
         }

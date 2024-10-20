@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserService userService;
 
@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService{
         if (userService.existsByUsername(userCreateTO.getUsername())) {
             throw new UserAlreadyExistsException("Registration Failed: Provided username already exists. Try sign in or provide another username.");
         }
-        if(!userCreateTO.getPassword().equals(userCreateTO.getRepeatedPassword())){
+        if (!userCreateTO.getPassword().equals(userCreateTO.getRepeatedPassword())) {
             throw new PasswordMismatchException("Registration Failed: Passwords don't match.");
         }
 
