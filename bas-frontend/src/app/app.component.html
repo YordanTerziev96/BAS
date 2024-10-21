@@ -1,0 +1,15 @@
+<!-- Common layout wrapper -->
+<div class="app-container">
+  <!-- You can include a header or navigation bar here if needed -->
+  <header>
+    <app-navigation *ngIf="authService.isAuthenticated()"></app-navigation>
+  </header>
+
+  <!-- The content of the current route will be displayed here -->
+  <router-outlet></router-outlet>
+
+  <!-- You can also add a footer if necessary -->
+  <footer>
+    <p>Footer content</p>
+  </footer>
+</div>
