@@ -45,7 +45,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<ApiResponseDTO<?>> signUpUser(UserCreateTO userCreateTO)
             throws UserAlreadyExistsException, RoleNotFoundException, PasswordMismatchException {
-        //TODO - I think there was a way to create a custom validator that worked with the @Valid annotation.
         if (userService.existsByEmail(userCreateTO.getEmail())) {
             throw new UserAlreadyExistsException("Registration Failed: Provided email already exists. Try sign in or provide another email.");
         }

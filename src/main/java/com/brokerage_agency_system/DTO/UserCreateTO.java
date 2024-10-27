@@ -18,13 +18,13 @@ public class UserCreateTO {
     private String username;
 
     @NotBlank(message = "Password is required!")
-    @Size(min = 8, message = "Password must have atleast 8 characters!")
-    @Size(max = 20, message = "Password can have have atmost 20 characters!")
+    @Size(min = 8, message = "Password must have at least 8 characters!")
+    @Size(max = 20, message = "Password can have have almost 20 characters!")
     private String password;
 
     @NotBlank(message = "Password is required!")
-    @Size(min = 8, message = "Password must have atleast 8 characters!")
-    @Size(max = 20, message = "Password can have have atmost 20 characters!")
+    @Size(min = 8, message = "Password must have at least 8 characters!")
+    @Size(max = 20, message = "Password can have have almost 20 characters!")
     private String repeatedPassword;
 
     @Email(message = "Email is not in valid format!")

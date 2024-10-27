@@ -8,6 +8,7 @@ import com.brokerage_agency_system.exception.RoleNotFoundException;
 import com.brokerage_agency_system.exception.UserAlreadyExistsException;
 import com.brokerage_agency_system.service.AuthService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,10 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@AllArgsConstructor
 @CrossOrigin("*")
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
+
     private AuthService authService;
 
     @PostMapping("/signup")
