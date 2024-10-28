@@ -52,6 +52,7 @@ public class EstateService {
     public Estate saveEstate(Estate estate, EstateCreateTO createTO) {
 
         estate.setStatus(createTO.getStatus());
+        estate.setEstateType(createTO.getEstateType());
         estate.setDescription(createTO.getDescription());
         estate.setCoordinates(createTO.getCoordinates());
         estate.setComments(createTO.getComments());
@@ -76,6 +77,7 @@ public class EstateService {
 
     public Estate updateEstate(Estate estate, EstateTO estateTO) {
         Optional.ofNullable(estateTO.getStatus()).ifPresent(estate::setStatus);
+        Optional.ofNullable(estateTO.getEstateType()).ifPresent(estate::setEstateType);
         Optional.ofNullable(estateTO.getDescription()).ifPresent(estate::setDescription);
         Optional.ofNullable(estateTO.getCoordinates()).ifPresent(estate::setCoordinates);
         Optional.ofNullable(estateTO.getComments()).ifPresent(estate::setComments);

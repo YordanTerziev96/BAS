@@ -1,6 +1,8 @@
 package com.brokerage_agency_system.DTO;
 
 
+import com.brokerage_agency_system.model.EstateStatus;
+import com.brokerage_agency_system.model.EstateType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -12,7 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class EstateTO {
 
-    private String status;
+    private EstateStatus status;
+
+    private EstateType estateType;
 
     private String description;
 

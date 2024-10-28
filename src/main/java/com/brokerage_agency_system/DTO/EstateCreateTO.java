@@ -1,8 +1,6 @@
 package com.brokerage_agency_system.DTO;
 
-import com.brokerage_agency_system.model.Image;
-import com.brokerage_agency_system.model.Owner;
-import com.brokerage_agency_system.model.User;
+import com.brokerage_agency_system.model.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,10 @@ import java.util.List;
 public class EstateCreateTO {
 
     @NotBlank(message = "Status cannot be none")
-    private String status;
+    private EstateStatus status;
+
+    @NotBlank(message = "Estate type cannot be none")
+    private EstateType estateType;
 
     @NotBlank(message = "Username cannot be none")
     private String username;

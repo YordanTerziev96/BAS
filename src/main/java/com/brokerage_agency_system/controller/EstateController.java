@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/estates")
-@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 @CrossOrigin(origins = "http://localhost:4200")
 public class EstateController {
 

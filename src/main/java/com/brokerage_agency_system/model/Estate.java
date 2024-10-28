@@ -20,8 +20,13 @@ public class Estate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private EstateStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstateType estateType;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
