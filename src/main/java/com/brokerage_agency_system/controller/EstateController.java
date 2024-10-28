@@ -87,7 +87,6 @@ public class EstateController {
     }
 
     @GetMapping("/owners")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Owner> getAllOwners() {
         return estateService.getAllOwners();
     }
