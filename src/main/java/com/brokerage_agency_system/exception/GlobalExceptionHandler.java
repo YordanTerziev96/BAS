@@ -30,6 +30,20 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponseDTO<?>> handleValidationExceptions(IllegalArgumentException ex) {
+        String errorMessage = ex.getMessage() != null ? ex.getMessage() : "Invalid input provided.";
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ApiResponseDTO.builder()
+                                .isSuccess(false)
+                                .message(errorMessage)
+                                .build()
+                );
+    }
+
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ResponseEntity<ApiResponseDTO<?>> UserAlreadyExistsExceptionHandler(UserAlreadyExistsException exception) {
         return ResponseEntity
