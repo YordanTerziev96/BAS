@@ -2,6 +2,7 @@ package com.brokerage_agency_system.DTO;
 
 import com.brokerage_agency_system.model.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -13,10 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class EstateCreateTO {
 
-    @NotBlank(message = "Status cannot be none")
+    @NotNull(message = "Status cannot be null")
     private EstateStatus status;
 
-    @NotBlank(message = "Estate type cannot be none")
+    @NotNull(message = "Estate type cannot be null")
     private EstateType estateType;
 
     @NotBlank(message = "Username cannot be none")
@@ -24,7 +25,7 @@ public class EstateCreateTO {
 
     private String description;
 
-    @NotBlank(message = "Owner id cannot be none")
+    @NotNull(message = "Owner id cannot be null")
     private Long ownerId;
 
     @NotBlank(message = "Coordinates cannot be none")
@@ -32,7 +33,7 @@ public class EstateCreateTO {
 
     private List<String> comments;
 
-    @NotBlank(message = "Price cannot be none")
+    @NotNull(message = "Price cannot be null")
     private Long price;
 
     @NotBlank(message = "Neighbourhood cannot be none")
