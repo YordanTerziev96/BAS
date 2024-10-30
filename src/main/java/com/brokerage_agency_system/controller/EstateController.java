@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
 @RequestMapping("/estates")
 @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 @CrossOrigin(origins = "http://localhost:4200")
-@Validated
 public class EstateController {
 
     private final EstateService estateService;
