@@ -4,6 +4,7 @@ import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.InvalidFileTypeException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.service.EstateService;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -134,7 +134,7 @@ public class EstateController {
 
     @PostMapping(value = "/{estateId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImages(@PathVariable Long estateId,
-                                          @RequestParam("file") List<MultipartFile> images) {
+                                          @RequestParam("file") List<MultipartFile> images) throws InvalidFileTypeException {
         try {
             var estate = validator.validateFile(images, estateId);
             var updatedEstate = estateService.saveImages(images, estate);

@@ -3,6 +3,7 @@ package com.brokerage_agency_system.service;
 import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.InvalidFileTypeException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.model.Image;
@@ -90,8 +91,13 @@ public class EstateService {
         return estateRepository.findById(estateId);
     }
 
-    public Estate saveImages(List<MultipartFile> images, Estate estate) throws IOException {
+    public Estate saveImages(List<MultipartFile> images, Estate estate) throws IOException, InvalidFileTypeException {
         for (MultipartFile file : images) {
+            String mimeType = file.getContentType();
+            if (mimeType == null || !mimeType.startsWith("image/")) {
+                throw new InvalidFileTypeException("Only image files are allowed.");
+            }
+
             var image = Image.builder()
                     .data(file.getBytes())
                     .mimeType(file.getContentType())
