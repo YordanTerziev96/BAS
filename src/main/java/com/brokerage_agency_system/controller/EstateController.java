@@ -41,7 +41,7 @@ public class EstateController {
     }
 
     @GetMapping("/{estateId}")
-    public ResponseEntity<?> getEstate(@RequestParam String estateId) {
+    public ResponseEntity<?> getEstate(@PathVariable String estateId) {
         var estate = estateService.getEstateById(estateId);
 
         return estate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -132,9 +132,9 @@ public class EstateController {
         }
     }
 
-    @PostMapping(value = "/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadImages(@RequestParam("file") List<MultipartFile> images,
-                                        @RequestParam("estateId") Long estateId) {
+    @PostMapping(value = "/{estateId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImages(@PathVariable Long estateId,
+                                          @RequestParam("file") List<MultipartFile> images) {
         try {
             var estate = validator.validateFile(images, estateId);
             var updatedEstate = estateService.saveImages(images, estate);
@@ -144,9 +144,9 @@ public class EstateController {
         }
     }
 
-    @GetMapping("/images")
-    public ResponseEntity<?> getImages(@RequestParam("estateId") Long estateId) {
 
+    @GetMapping("/{estateId}/images")
+    public ResponseEntity<?> getImages(@PathVariable Long estateId) {
         try {
             var validatedEstate = validator.validateEstate(estateId);
             var images = estateService.getImages(validatedEstate);
@@ -155,6 +155,7 @@ public class EstateController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @DeleteMapping("/images/{imageId}")
     public ResponseEntity<?> deleteImage(@PathVariable Long imageId) {
