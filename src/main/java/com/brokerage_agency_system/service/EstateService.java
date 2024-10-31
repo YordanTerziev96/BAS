@@ -10,7 +10,6 @@ import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.repository.EstateRepository;
 import com.brokerage_agency_system.repository.ImageRepository;
 import com.brokerage_agency_system.repository.OwnerRepository;
-import com.brokerage_agency_system.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,13 +91,15 @@ public class EstateService {
     }
 
     public Estate saveImages(List<MultipartFile> images, Estate estate) throws IOException {
-        for (MultipartFile i : images) {
+        for (MultipartFile file : images) {
             var image = Image.builder()
-                    .data(i.getBytes())
+                    .data(file.getBytes())
+                    .mimeType(file.getContentType())
                     .build();
 
             estate.getImages().add(image);
         }
+
         return estateRepository.save(estate);
     }
 
