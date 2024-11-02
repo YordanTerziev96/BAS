@@ -19,5 +19,7 @@ public class Image {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "data", nullable = false)
     private byte[] data;
-}
 
+    @Column(name = "mime_type", nullable = false) // Add the MIME type field
+    private String mimeType; // Store the MIME type of the image
+}

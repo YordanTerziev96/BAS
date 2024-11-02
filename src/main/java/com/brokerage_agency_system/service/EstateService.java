@@ -3,6 +3,7 @@ package com.brokerage_agency_system.service;
 import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.InvalidFileTypeException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.model.Image;
@@ -10,7 +11,6 @@ import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.repository.EstateRepository;
 import com.brokerage_agency_system.repository.ImageRepository;
 import com.brokerage_agency_system.repository.OwnerRepository;
-import com.brokerage_agency_system.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,14 +91,21 @@ public class EstateService {
         return estateRepository.findById(estateId);
     }
 
-    public Estate saveImages(List<MultipartFile> images, Estate estate) throws IOException {
-        for (MultipartFile i : images) {
+    public Estate saveImages(List<MultipartFile> images, Estate estate) throws IOException, InvalidFileTypeException {
+        for (MultipartFile file : images) {
+            String mimeType = file.getContentType();
+            if (mimeType == null || !mimeType.startsWith("image/")) {
+                throw new InvalidFileTypeException("Only image files are allowed.");
+            }
+
             var image = Image.builder()
-                    .data(i.getBytes())
+                    .data(file.getBytes())
+                    .mimeType(file.getContentType())
                     .build();
 
             estate.getImages().add(image);
         }
+
         return estateRepository.save(estate);
     }
 
