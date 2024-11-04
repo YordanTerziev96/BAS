@@ -58,7 +58,7 @@ public class EstateService {
         estate.setComments(createTO.getComments());
         estate.setPrice(createTO.getPrice());
         estate.setNeighbourhood(createTO.getNeighbourhood());
-        estate.setImages(new ArrayList<>());
+        Optional.ofNullable(createTO.getImages()).ifPresent(estate::setImages);
 
         return estateRepository.save(estate);
     }

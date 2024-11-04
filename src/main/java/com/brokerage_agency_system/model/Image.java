@@ -20,6 +20,6 @@ public class Image {
     @Column(name = "data", nullable = false)
     private byte[] data;
 
-    @Column(name = "mime_type", nullable = false) // Add the MIME type field
-    private String mimeType; // Store the MIME type of the image
+    @Column(name = "mime_type", nullable = false)
+    private String mimeType;
 }

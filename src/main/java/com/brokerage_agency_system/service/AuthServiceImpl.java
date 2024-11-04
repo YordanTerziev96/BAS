@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        SignInResponseDTO signInResponseDTO = SignInResponseDTO.builder()
+        var signInResponseDTO = SignInResponseDTO.builder()
                 .username(userDetails.getUsername())
                 .email(userDetails.getEmail())
                 .id(userDetails.getId())

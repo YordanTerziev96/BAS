@@ -38,4 +38,7 @@ public class EstateCreateTO {
 
     @NotBlank(message = "Neighbourhood cannot be none")
     private String neighbourhood;
+
+    private List<Image> images;
+
 }
