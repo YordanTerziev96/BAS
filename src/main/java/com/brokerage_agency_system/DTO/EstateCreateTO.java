@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,6 +40,6 @@ public class EstateCreateTO {
     @NotBlank(message = "Neighbourhood cannot be none")
     private String neighbourhood;
 
-    private List<Image> images;
+    private List<MultipartFile> images;
 
 }

@@ -58,7 +58,15 @@ public class EstateService {
         estate.setComments(createTO.getComments());
         estate.setPrice(createTO.getPrice());
         estate.setNeighbourhood(createTO.getNeighbourhood());
-        Optional.ofNullable(createTO.getImages()).ifPresent(estate::setImages);
+        Optional.ofNullable(createTO.getImages()).map(multipartFiles -> {
+            try {
+                return buildImagePOs(multipartFiles);
+            } catch (InvalidFileTypeException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).ifPresent(estate::setImages);
 
         return estateRepository.save(estate);
     }
@@ -92,7 +100,15 @@ public class EstateService {
     }
 
     public Estate saveImages(List<MultipartFile> images, Estate estate) throws IOException, InvalidFileTypeException {
-        for (MultipartFile file : images) {
+        estate.setImages(buildImagePOs(images));
+
+        return estateRepository.save(estate);
+    }
+
+    private static List<Image> buildImagePOs(List<MultipartFile> multipartFiles) throws InvalidFileTypeException, IOException {
+        List<Image> imagesList = new ArrayList<>();
+
+        for (MultipartFile file : multipartFiles) {
             String mimeType = file.getContentType();
             if (mimeType == null || !mimeType.startsWith("image/")) {
                 throw new InvalidFileTypeException("Only image files are allowed.");
@@ -103,10 +119,11 @@ public class EstateService {
                     .mimeType(file.getContentType())
                     .build();
 
-            estate.getImages().add(image);
+
+            imagesList.add(image);
         }
 
-        return estateRepository.save(estate);
+        return imagesList;
     }
 
     public List<Image> getImages(Estate estate) {

@@ -48,7 +48,7 @@ public class EstateController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createEstate(@RequestBody EstateCreateTO createTO) {
+    public ResponseEntity<?> createEstate(@ModelAttribute EstateCreateTO createTO) {
         try {
             var validatedEstate = validator.validateForCreate(createTO);
 
