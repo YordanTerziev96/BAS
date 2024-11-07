@@ -4,6 +4,7 @@ import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.ImageNotFoundException;
 import com.brokerage_agency_system.exception.InvalidFileTypeException;
 import com.brokerage_agency_system.exception.LocationNotFoundException;
 import com.brokerage_agency_system.exception.OwnerAlreadyExistsException;
@@ -142,8 +143,8 @@ public class EstateController {
 
 
     @DeleteMapping("/images/{imageId}")
-    public ResponseEntity<?> deleteImage(@PathVariable Long imageId) {
-        var existingImage = validator.validateForDeleteFile(imageId);
+    public ResponseEntity<?> deleteImage(@PathVariable Long imageId) throws ImageNotFoundException {
+        var existingImage = validator.validateDeleteImage(imageId);
         estateService.deleteFile(existingImage);
         return ResponseEntity.accepted().body("Deleted image with id: " + imageId);
     }

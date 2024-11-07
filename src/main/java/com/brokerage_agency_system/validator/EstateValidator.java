@@ -3,6 +3,7 @@ package com.brokerage_agency_system.validator;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.ImageNotFoundException;
 import com.brokerage_agency_system.exception.LocationNotFoundException;
 import com.brokerage_agency_system.exception.OwnerAlreadyExistsException;
 import com.brokerage_agency_system.exception.OwnerNotFoundException;
@@ -108,13 +109,10 @@ public class EstateValidator {
         return estate.get();
     }
 
-    public Image validateForDeleteFile(Long fileId) {
-        if (fileId == null) {
-            throw new NullPointerException("Empty object");
-        }
+    public Image validateDeleteImage(Long fileId) throws ImageNotFoundException {
         var existingImage = imageRepository.findById(String.valueOf(fileId));
         if (existingImage.isEmpty()) {
-            throw new NoSuchElementException("There is no such file with id: " + fileId);
+            throw new ImageNotFoundException("There is no such image with id: " + fileId);
         }
         return existingImage.get();
     }
