@@ -73,7 +73,7 @@ public class EstateController {
     }
 
     @PutMapping("/{estateId}")
-    public ResponseEntity<?> updateEstate(@PathVariable String estateId, @Valid @RequestBody EstateTO estateTO) {
+    public ResponseEntity<?> updateEstate(@PathVariable String estateId, @Valid @RequestBody EstateTO estateTO) throws OwnerNotFoundException, LocationNotFoundException {
         var validatedEstate = validator.validateForUpdate(estateId, estateTO);
         var updatedEstate = estateService.updateEstate(validatedEstate, estateTO);
         return ResponseEntity.ok(updatedEstate);
@@ -111,14 +111,14 @@ public class EstateController {
     }
 
     @PutMapping("/owner/{ownerId}")
-    public ResponseEntity<?> updateOwner(@PathVariable String ownerId, @Valid @RequestBody OwnerCreateTO ownerCreateTO) {
+    public ResponseEntity<?> updateOwner(@PathVariable String ownerId, @Valid @RequestBody OwnerCreateTO ownerCreateTO) throws OwnerNotFoundException {
         var validateOwner = validator.validateForUpdateOwner(ownerId, ownerCreateTO);
         var updateOwner = estateService.updateOwner(validateOwner, ownerCreateTO);
         return ResponseEntity.ok(updateOwner);
     }
 
     @DeleteMapping("/owner/{ownerId}")
-    public ResponseEntity<?> deleteOwner(@PathVariable Long ownerId) {
+    public ResponseEntity<?> deleteOwner(@PathVariable Long ownerId) throws OwnerNotFoundException {
         var existingOwner = validator.validateForDeleteOwner(ownerId);
         estateService.deleteOwner(existingOwner);
         return ResponseEntity.accepted().body("Deleted owner with id: " + ownerId);

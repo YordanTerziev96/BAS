@@ -58,32 +58,26 @@ public class EstateValidator {
         }
     }
 
-    public Owner validateForUpdateOwner(String ownerId, OwnerCreateTO createTO) {
-        if (ownerId.isBlank() || createTO == null) {
-            throw new NullPointerException("Empty object");
-        }
+    public Owner validateForUpdateOwner(String ownerId, OwnerCreateTO createTO) throws OwnerNotFoundException {
+
         var existingOwner = ownerRepository.findById(ownerId);
         if (existingOwner.isEmpty()) {
-            throw new NoSuchElementException("There is no such owner with id: " + ownerId);
+            throw new OwnerNotFoundException("There is no such owner with id: " + ownerId);
         }
         return existingOwner.get();
     }
 
-    public Owner validateForDeleteOwner(Long ownerId) {
-        if (ownerId == null) {
-            throw new NullPointerException("Empty object");
-        }
+    public Owner validateForDeleteOwner(Long ownerId) throws OwnerNotFoundException {
+
         var existingOwner = ownerRepository.findById(String.valueOf(ownerId));
         if (existingOwner.isEmpty()) {
-            throw new NoSuchElementException("There is no such owner with id: " + ownerId);
+            throw new OwnerNotFoundException("There is no such owner with id: " + ownerId);
         }
         return existingOwner.get();
     }
 
-    public Estate validateForUpdate(String estateId, EstateTO estateTO) {
-        if (estateId.isBlank() || estateTO == null) {
-            throw new NullPointerException("Empty object");
-        }
+    public Estate validateForUpdate(String estateId, EstateTO estateTO) throws LocationNotFoundException, OwnerNotFoundException {
+
         var estate = estateRepository.findById(estateId);
         if (estate.isEmpty()) {
             throw new NoSuchElementException("There is no such estate with id: " + estateId);
@@ -91,13 +85,13 @@ public class EstateValidator {
         if (estateTO.getOwnerId() != null) {
             var existingOwner = ownerRepository.findById(String.valueOf(estateTO.getOwnerId()));
             if (existingOwner.isEmpty()) {
-                throw new NoSuchElementException("There is no such owner with id: " + estateTO.getOwnerId());
+                throw new OwnerNotFoundException("There is no such owner with id: " + estateTO.getOwnerId());
             }
             estate.get().setOwner(existingOwner.get());
         }
         var location = locationRepository.findByPostalCode(estateTO.getPostalCode());
         if (location.isEmpty()) {
-            throw new NoSuchElementException("There is no such town with postal code: " + estateTO.getPostalCode());
+            throw new LocationNotFoundException("There is no such town with postal code: " + estateTO.getPostalCode());
         }
         estate.get().setLocation(location.get());
         return estate.get();
