@@ -3,6 +3,7 @@ package com.brokerage_agency_system.validator;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.LocationNotFoundException;
 import com.brokerage_agency_system.exception.OwnerNotFoundException;
 import com.brokerage_agency_system.exception.UserNotFoundException;
 import com.brokerage_agency_system.model.Estate;
@@ -26,7 +27,7 @@ public class EstateValidator {
     ImageRepository imageRepository;
     LocationRepository locationRepository;
 
-    public Estate validateForCreate(EstateCreateTO estateCreateTO) throws UserNotFoundException, OwnerNotFoundException {
+    public Estate validateForCreate(EstateCreateTO estateCreateTO) throws UserNotFoundException, OwnerNotFoundException, LocationNotFoundException {
 
         var existingUser = userRepository.findByUsername(estateCreateTO.getUsername());
         if (existingUser.isEmpty()) {
@@ -39,7 +40,7 @@ public class EstateValidator {
         }
         var location = locationRepository.findByPostalCode(estateCreateTO.getPostalCode());
         if (location.isEmpty()) {
-            throw new NoSuchElementException("There is no such town with postal code: " + estateCreateTO.getPostalCode());
+            throw new LocationNotFoundException("There is no such town with postal code: " + estateCreateTO.getPostalCode());
         }
 
         return Estate.builder()
