@@ -3,6 +3,7 @@ package com.brokerage_agency_system.validator;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.EstateNotFoundException;
 import com.brokerage_agency_system.exception.ImageNotFoundException;
 import com.brokerage_agency_system.exception.LocationNotFoundException;
 import com.brokerage_agency_system.exception.OwnerAlreadyExistsException;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Component
@@ -77,11 +77,11 @@ public class EstateValidator {
         return existingOwner.get();
     }
 
-    public Estate validateForUpdate(String estateId, EstateTO estateTO) throws LocationNotFoundException, OwnerNotFoundException {
+    public Estate validateForUpdate(String estateId, EstateTO estateTO) throws LocationNotFoundException, OwnerNotFoundException, EstateNotFoundException {
 
         var estate = estateRepository.findById(estateId);
         if (estate.isEmpty()) {
-            throw new NoSuchElementException("There is no such estate with id: " + estateId);
+            throw new EstateNotFoundException("There is no such estate with id: " + estateId);
         }
         if (estateTO.getOwnerId() != null) {
             var existingOwner = ownerRepository.findById(String.valueOf(estateTO.getOwnerId()));
@@ -98,13 +98,13 @@ public class EstateValidator {
         return estate.get();
     }
 
-    public Estate validateFile(List<MultipartFile> file, Long estateId) {
+    public Estate validateFile(List<MultipartFile> file, Long estateId) throws EstateNotFoundException {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("Empty file.");
         }
         var estate = estateRepository.findById(String.valueOf(estateId));
         if (estate.isEmpty()) {
-            throw new NoSuchElementException("There is no such estate with id: " + estateId);
+            throw new EstateNotFoundException("There is no such estate with id: " + estateId);
         }
         return estate.get();
     }
@@ -117,13 +117,11 @@ public class EstateValidator {
         return existingImage.get();
     }
 
-    public Estate validateEstate(Long estateId) {
-        if (estateId == null) {
-            throw new IllegalArgumentException("Empty object.");
-        }
+    public Estate validateEstate(Long estateId) throws EstateNotFoundException {
+
         var estate = estateRepository.findById(String.valueOf(estateId));
         if (estate.isEmpty()) {
-            throw new NoSuchElementException("There is no such estate with id: " + estateId);
+            throw new EstateNotFoundException("There is no such estate with id: " + estateId);
         }
         return estate.get();
     }

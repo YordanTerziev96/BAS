@@ -4,6 +4,7 @@ import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.EstateNotFoundException;
 import com.brokerage_agency_system.exception.ImageNotFoundException;
 import com.brokerage_agency_system.exception.InvalidFileTypeException;
 import com.brokerage_agency_system.exception.LocationNotFoundException;
@@ -74,7 +75,7 @@ public class EstateController {
     }
 
     @PutMapping("/{estateId}")
-    public ResponseEntity<?> updateEstate(@PathVariable String estateId, @Valid @RequestBody EstateTO estateTO) throws OwnerNotFoundException, LocationNotFoundException {
+    public ResponseEntity<?> updateEstate(@PathVariable String estateId, @Valid @RequestBody EstateTO estateTO) throws OwnerNotFoundException, LocationNotFoundException, EstateNotFoundException {
         var validatedEstate = validator.validateForUpdate(estateId, estateTO);
         var updatedEstate = estateService.updateEstate(validatedEstate, estateTO);
         return ResponseEntity.ok(updatedEstate);
@@ -86,7 +87,7 @@ public class EstateController {
     }
 
     @DeleteMapping("/{estateId}")
-    public ResponseEntity<?> deleteEstate(@PathVariable Long estateId) {
+    public ResponseEntity<?> deleteEstate(@PathVariable Long estateId) throws EstateNotFoundException {
         var existingEstate = validator.validateEstate(estateId);
         estateService.deleteEstate(existingEstate);
         return ResponseEntity.accepted().body("Deleted estate with id: " + estateId);
@@ -127,7 +128,7 @@ public class EstateController {
 
     @PostMapping(value = "/{estateId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImages(@PathVariable Long estateId,
-                                          @RequestParam("file") List<MultipartFile> images) throws InvalidFileTypeException, IOException {
+                                          @RequestParam("file") List<MultipartFile> images) throws InvalidFileTypeException, IOException, EstateNotFoundException {
         var estate = validator.validateFile(images, estateId);
         var updatedEstate = estateService.saveImages(images, estate);
         return ResponseEntity.ok(updatedEstate);
@@ -135,7 +136,7 @@ public class EstateController {
 
 
     @GetMapping("/{estateId}/images")
-    public ResponseEntity<?> getImages(@PathVariable Long estateId) {
+    public ResponseEntity<?> getImages(@PathVariable Long estateId) throws EstateNotFoundException {
         var validatedEstate = validator.validateEstate(estateId);
         var images = estateService.getImages(validatedEstate);
         return ResponseEntity.ok(images);

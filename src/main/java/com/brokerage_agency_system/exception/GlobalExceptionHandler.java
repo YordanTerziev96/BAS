@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(value = {UserNotFoundException.class, OwnerNotFoundException.class, LocationNotFoundException.class, ImageNotFoundException.class})
+    @ExceptionHandler(value = {UserNotFoundException.class, OwnerNotFoundException.class, LocationNotFoundException.class, ImageNotFoundException.class, EstateNotFoundException.class})
     public ResponseEntity<ApiResponseDTO<?>> CustomNotFoundExceptionHandler(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
