@@ -103,7 +103,7 @@ public class EstateValidator {
         }
         var location = locationRepository.findByPostalCode(estateTO.getPostalCode());
         if(location.isEmpty()) {
-            throw new NoSuchElementException("TThere is no such town with postal code: " + estateTO.getPostalCode());
+            throw new NoSuchElementException("There is no such town with postal code: " + estateTO.getPostalCode());
         }
         estate.get().setLocation(location.get());
         return estate.get();
