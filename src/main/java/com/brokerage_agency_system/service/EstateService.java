@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,14 +48,12 @@ public class EstateService {
     }
 
     public Estate saveEstate(Estate estate, EstateCreateTO createTO) {
-
         estate.setStatus(createTO.getStatus());
         estate.setEstateType(createTO.getEstateType());
         estate.setDescription(createTO.getDescription());
         estate.setCoordinates(createTO.getCoordinates());
         estate.setComments(createTO.getComments());
         estate.setPrice(createTO.getPrice());
-        estate.setNeighbourhood(createTO.getNeighbourhood());
         Optional.ofNullable(createTO.getImages()).ifPresent(estate::setImages);
 
         return estateRepository.save(estate);
@@ -82,7 +78,6 @@ public class EstateService {
         Optional.ofNullable(estateTO.getCoordinates()).ifPresent(estate::setCoordinates);
         Optional.ofNullable(estateTO.getComments()).ifPresent(estate::setComments);
         Optional.ofNullable(estateTO.getPrice()).ifPresent(estate::setPrice);
-        Optional.ofNullable(estateTO.getNeighbourhood()).ifPresent(estate::setNeighbourhood);
 
         return estateRepository.save(estate);
     }
@@ -120,7 +115,7 @@ public class EstateService {
                 .filter(estate -> filterDTO.getOwnerId() == null || estate.getOwner().getId().equals(filterDTO.getOwnerId()))
                 .filter(estate -> filterDTO.getMinPrice() == null || estate.getPrice() >= filterDTO.getMinPrice())
                 .filter(estate -> filterDTO.getMaxPrice() == null || estate.getPrice() <= filterDTO.getMaxPrice())
-                .filter(estate -> filterDTO.getNeighbourhood() == null || estate.getNeighbourhood().equals(filterDTO.getNeighbourhood()))
+                .filter(estate -> filterDTO.getNeighbourhood() == null || estate.getLocation().getNeighbourhood().equals(filterDTO.getNeighbourhood()))
                 .collect(Collectors.toList());
     }
 

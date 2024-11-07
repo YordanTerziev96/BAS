@@ -36,8 +36,8 @@ public class EstateCreateTO {
     @NotNull(message = "Price cannot be null")
     private Long price;
 
-    @NotBlank(message = "Neighbourhood cannot be none")
-    private String neighbourhood;
+    @NotBlank(message = "Postal code cannot be none")
+    private String postalCode;
 
     private List<Image> images;
 

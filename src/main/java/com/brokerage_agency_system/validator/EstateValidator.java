@@ -6,10 +6,7 @@ import com.brokerage_agency_system.DTO.OwnerCreateTO;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.model.Image;
 import com.brokerage_agency_system.model.Owner;
-import com.brokerage_agency_system.repository.EstateRepository;
-import com.brokerage_agency_system.repository.ImageRepository;
-import com.brokerage_agency_system.repository.OwnerRepository;
-import com.brokerage_agency_system.repository.UserRepository;
+import com.brokerage_agency_system.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +22,7 @@ public class EstateValidator {
     OwnerRepository ownerRepository;
     EstateRepository estateRepository;
     ImageRepository imageRepository;
+    LocationRepository locationRepository;
 
     public Estate validateForCreate(EstateCreateTO estateCreateTO) {
         if (estateCreateTO == null) {
@@ -44,8 +42,16 @@ public class EstateValidator {
         if (existingOwner.isEmpty()) {
             throw new NoSuchElementException("There is no such owner with id: " + estateCreateTO.getOwnerId());
         }
+        var location = locationRepository.findByPostalCode(estateCreateTO.getPostalCode());
+        if (location.isEmpty()) {
+            throw new NoSuchElementException("There is no such town with postal code: " + estateCreateTO.getPostalCode());
+        }
 
-        return Estate.builder().user(existingUser.get()).owner(existingOwner.get()).build();
+        return Estate.builder()
+                .user(existingUser.get())
+                .owner(existingOwner.get())
+                .location(location.get())
+                .build();
     }
 
     public void validateForCreateOwner(OwnerCreateTO createTO) {
@@ -93,9 +99,13 @@ public class EstateValidator {
             if (existingOwner.isEmpty()) {
                 throw new NoSuchElementException("There is no such owner with id: " + estateTO.getOwnerId());
             }
-            // I don't like it, but for now is okay.
             estate.get().setOwner(existingOwner.get());
         }
+        var location = locationRepository.findByPostalCode(estateTO.getPostalCode());
+        if(location.isEmpty()) {
+            throw new NoSuchElementException("TThere is no such town with postal code: " + estateTO.getPostalCode());
+        }
+        estate.get().setLocation(location.get());
         return estate.get();
     }
 

@@ -28,5 +28,5 @@ public class EstateTO {
 
     private Long price;
 
-    private String neighbourhood;
+    private String postalCode;
 }

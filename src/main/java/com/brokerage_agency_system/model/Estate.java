@@ -1,7 +1,5 @@
 package com.brokerage_agency_system.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,8 +50,9 @@ public class Estate {
     @Column(nullable = false)
     private Long price;
 
-    @Column(nullable = false)
-    private String neighbourhood;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
 
     @Override
     public String toString() {
