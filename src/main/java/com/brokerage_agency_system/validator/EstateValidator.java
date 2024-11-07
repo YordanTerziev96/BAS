@@ -4,6 +4,7 @@ import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
 import com.brokerage_agency_system.exception.LocationNotFoundException;
+import com.brokerage_agency_system.exception.OwnerAlreadyExistsException;
 import com.brokerage_agency_system.exception.OwnerNotFoundException;
 import com.brokerage_agency_system.exception.UserNotFoundException;
 import com.brokerage_agency_system.model.Estate;
@@ -50,13 +51,10 @@ public class EstateValidator {
                 .build();
     }
 
-    public void validateForCreateOwner(OwnerCreateTO createTO) {
-        if (createTO == null) {
-            throw new NullPointerException("Empty object");
-        }
+    public void validateForCreateOwner(OwnerCreateTO createTO) throws OwnerAlreadyExistsException {
         var existingOwner = ownerRepository.findByEmail(createTO.getEmail());
         if (existingOwner.isPresent()) {
-            throw new IllegalArgumentException("Owner already exists!");
+            throw new OwnerAlreadyExistsException("Owner already exists!");
         }
     }
 

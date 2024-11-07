@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(value = UserAlreadyExistsException.class)
-    public ResponseEntity<ApiResponseDTO<?>> UserAlreadyExistsExceptionHandler(UserAlreadyExistsException exception) {
+    @ExceptionHandler(value = {UserAlreadyExistsException.class, OwnerAlreadyExistsException.class})
+    public ResponseEntity<ApiResponseDTO<?>> UserOrOwnerAlreadyExistsExceptionHandler(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(
