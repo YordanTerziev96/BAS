@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler({ IllegalArgumentException.class, InvalidFileTypeException.class })
+    @ExceptionHandler({IllegalArgumentException.class, InvalidFileTypeException.class})
     public ResponseEntity<ApiResponseDTO<?>> handleValidationExceptions(Exception ex) {
         String errorMessage = ex.getMessage() != null ? ex.getMessage() : "Invalid input provided.";
 
@@ -41,8 +41,8 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(value = UserNotFoundException.class)
-    public ResponseEntity<ApiResponseDTO<?>> UserNotFoundExceptionHandler(UserNotFoundException exception) {
+    @ExceptionHandler(value = {UserNotFoundException.class, OwnerNotFoundException.class})
+    public ResponseEntity<ApiResponseDTO<?>> UserOrOwnerNotFoundExceptionHandler(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(

@@ -3,6 +3,7 @@ package com.brokerage_agency_system.validator;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.OwnerNotFoundException;
 import com.brokerage_agency_system.exception.UserNotFoundException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.model.Image;
@@ -25,7 +26,7 @@ public class EstateValidator {
     ImageRepository imageRepository;
     LocationRepository locationRepository;
 
-    public Estate validateForCreate(EstateCreateTO estateCreateTO) throws UserNotFoundException {
+    public Estate validateForCreate(EstateCreateTO estateCreateTO) throws UserNotFoundException, OwnerNotFoundException {
 
         var existingUser = userRepository.findByUsername(estateCreateTO.getUsername());
         if (existingUser.isEmpty()) {
@@ -34,7 +35,7 @@ public class EstateValidator {
 
         var existingOwner = ownerRepository.findById(String.valueOf(estateCreateTO.getOwnerId()));
         if (existingOwner.isEmpty()) {
-            throw new NoSuchElementException("There is no such owner with id: " + estateCreateTO.getOwnerId());
+            throw new OwnerNotFoundException("There is no such owner with id: " + estateCreateTO.getOwnerId());
         }
         var location = locationRepository.findByPostalCode(estateCreateTO.getPostalCode());
         if (location.isEmpty()) {
