@@ -5,6 +5,7 @@ import com.brokerage_agency_system.DTO.UserCreateTO;
 import com.brokerage_agency_system.DTO.UserTO;
 import com.brokerage_agency_system.service.UserService;
 import com.brokerage_agency_system.validator.UserValidator;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -38,35 +38,24 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserCreateTO userCreateTO) {
-        try {
-            validator.validateForCreate(userCreateTO);
-            User createdUser = userService.saveUser(userCreateTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateTO userCreateTO) {
+        validator.validateForCreate(userCreateTO);
+        User createdUser = userService.saveUser(userCreateTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody UserTO userTO) {
-        try {
-            var validatedUser = validator.validateForUpdate(username, userTO);
-            User updatedUser = userService.updateUser(userTO, validatedUser);
-            return ResponseEntity.ok(updatedUser);
-        } catch (NullPointerException | NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateUser(@PathVariable String username, @Valid @RequestBody UserTO userTO) {
+        var validatedUser = validator.validateForUpdate(username, userTO);
+        User updatedUser = userService.updateUser(userTO, validatedUser);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
-        try {
-            var existingUser = validator.validateForDelete(userId);
-            userService.deleteUser(existingUser);
-            return ResponseEntity.accepted().body("Deleted user with id: " + userId);
-        } catch (NullPointerException | NoSuchElementException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+
+        var existingUser = validator.validateForDelete(userId);
+        userService.deleteUser(existingUser);
+        return ResponseEntity.accepted().body("Deleted user with id: " + userId);
     }
 }
