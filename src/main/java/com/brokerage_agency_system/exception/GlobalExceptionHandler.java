@@ -41,6 +41,17 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ResponseEntity<ApiResponseDTO<?>> UserNotFoundExceptionHandler(UserNotFoundException exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ApiResponseDTO.builder()
+                                .isSuccess(false)
+                                .message(exception.getMessage())
+                                .build()
+                );
+    }
 
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ResponseEntity<ApiResponseDTO<?>> UserAlreadyExistsExceptionHandler(UserAlreadyExistsException exception) {

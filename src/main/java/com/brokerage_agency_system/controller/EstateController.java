@@ -5,6 +5,7 @@ import com.brokerage_agency_system.DTO.EstateFilterDTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
 import com.brokerage_agency_system.exception.InvalidFileTypeException;
+import com.brokerage_agency_system.exception.UserNotFoundException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.service.EstateService;
@@ -49,7 +50,7 @@ public class EstateController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createEstate(@Valid @RequestBody EstateCreateTO createTO) {
+    public ResponseEntity<?> createEstate(@Valid @RequestBody EstateCreateTO createTO) throws UserNotFoundException {
 
         var validatedEstate = validator.validateForCreate(createTO);
 

@@ -3,6 +3,7 @@ package com.brokerage_agency_system.validator;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.DTO.EstateTO;
 import com.brokerage_agency_system.DTO.OwnerCreateTO;
+import com.brokerage_agency_system.exception.UserNotFoundException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.model.Image;
 import com.brokerage_agency_system.model.Owner;
@@ -24,20 +25,13 @@ public class EstateValidator {
     ImageRepository imageRepository;
     LocationRepository locationRepository;
 
-    public Estate validateForCreate(EstateCreateTO estateCreateTO) {
-        if (estateCreateTO == null) {
-            throw new NullPointerException("Empty Estate object");
-        }
-        if (estateCreateTO.getUsername().isEmpty()) {
-            throw new NullPointerException("Empty username.");
-        }
+    public Estate validateForCreate(EstateCreateTO estateCreateTO) throws UserNotFoundException {
+
         var existingUser = userRepository.findByUsername(estateCreateTO.getUsername());
         if (existingUser.isEmpty()) {
-            throw new NoSuchElementException("There is no such user with username: " + estateCreateTO.getUsername());
+            throw new UserNotFoundException("There is no such user with username: " + estateCreateTO.getUsername());
         }
-        if (estateCreateTO.getOwnerId() == null) {
-            throw new NullPointerException("Empty owner id");
-        }
+
         var existingOwner = ownerRepository.findById(String.valueOf(estateCreateTO.getOwnerId()));
         if (existingOwner.isEmpty()) {
             throw new NoSuchElementException("There is no such owner with id: " + estateCreateTO.getOwnerId());
@@ -102,7 +96,7 @@ public class EstateValidator {
             estate.get().setOwner(existingOwner.get());
         }
         var location = locationRepository.findByPostalCode(estateTO.getPostalCode());
-        if(location.isEmpty()) {
+        if (location.isEmpty()) {
             throw new NoSuchElementException("There is no such town with postal code: " + estateTO.getPostalCode());
         }
         estate.get().setLocation(location.get());
