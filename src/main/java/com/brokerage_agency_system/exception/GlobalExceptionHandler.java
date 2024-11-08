@@ -3,13 +3,10 @@ package com.brokerage_agency_system.exception;
 import com.brokerage_agency_system.DTO.ApiResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,7 +27,7 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler({ IllegalArgumentException.class, InvalidFileTypeException.class })
+    @ExceptionHandler({IllegalArgumentException.class, InvalidFileTypeException.class})
     public ResponseEntity<ApiResponseDTO<?>> handleValidationExceptions(Exception ex) {
         String errorMessage = ex.getMessage() != null ? ex.getMessage() : "Invalid input provided.";
 
@@ -44,9 +41,20 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(value = {UserNotFoundException.class, OwnerNotFoundException.class, LocationNotFoundException.class, ImageNotFoundException.class, EstateNotFoundException.class})
+    public ResponseEntity<ApiResponseDTO<?>> CustomNotFoundExceptionHandler(Exception exception) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ApiResponseDTO.builder()
+                                .isSuccess(false)
+                                .message(exception.getMessage())
+                                .build()
+                );
+    }
 
-    @ExceptionHandler(value = UserAlreadyExistsException.class)
-    public ResponseEntity<ApiResponseDTO<?>> UserAlreadyExistsExceptionHandler(UserAlreadyExistsException exception) {
+    @ExceptionHandler(value = {UserAlreadyExistsException.class, OwnerAlreadyExistsException.class})
+    public ResponseEntity<ApiResponseDTO<?>> UserOrOwnerAlreadyExistsExceptionHandler(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(

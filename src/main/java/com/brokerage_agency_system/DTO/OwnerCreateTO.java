@@ -1,6 +1,7 @@
 package com.brokerage_agency_system.DTO;
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class OwnerCreateTO {
     private String fullName;
 
     @NotBlank(message = "Email cannot be null")
+    @Email(message = "Email is not in valid format")
     private String email;
 
     @NotBlank(message = "Phone cannot be null")
