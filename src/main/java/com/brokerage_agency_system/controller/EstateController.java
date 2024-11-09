@@ -24,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -74,7 +75,7 @@ public class EstateController {
 
     }
 
-    @PutMapping("/{estateId}")
+    @PatchMapping("/{estateId}")
     public ResponseEntity<?> updateEstate(@PathVariable String estateId, @Valid @RequestBody EstateTO estateTO) throws OwnerNotFoundException, LocationNotFoundException, EstateNotFoundException {
         var validatedEstate = validator.validateForUpdate(estateId, estateTO);
         var updatedEstate = estateService.updateEstate(validatedEstate, estateTO);
