@@ -90,11 +90,15 @@ public class EstateValidator {
             }
             estate.get().setOwner(existingOwner.get());
         }
-        var location = locationRepository.findByPostalCode(estateTO.getPostalCode());
-        if (location.isEmpty()) {
-            throw new LocationNotFoundException("There is no such town with postal code: " + estateTO.getPostalCode());
+
+        if (estateTO.getPostalCode() != null) {
+            var location = locationRepository.findByPostalCode(estateTO.getPostalCode());
+            if (location.isEmpty()) {
+                throw new LocationNotFoundException("There is no such town with postal code: " + estateTO.getPostalCode());
+            }
+            estate.get().setLocation(location.get());
         }
-        estate.get().setLocation(location.get());
+
         return estate.get();
     }
 
