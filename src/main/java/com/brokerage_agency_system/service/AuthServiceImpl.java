@@ -102,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
                 .username(userCreateTO.getUsername())
                 .password(passwordEncoder.encode(userCreateTO.getPassword()))
                 .phone(userCreateTO.getPhone())
-                .description(userCreateTO.getDescription())
+                .fullName(userCreateTO.getFullName())
                 .enabled(true)
                 .roles(Set.of(roleRepository.findByName(RoleEnum.ROLE_USER)))
                 .build();

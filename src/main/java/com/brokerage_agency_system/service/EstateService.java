@@ -112,6 +112,7 @@ public class EstateService {
         List<Estate> estates = estateRepository.findAll();
         return estates.stream()
                 .filter(estate -> filterDTO.getStatus() == null || estate.getStatus().equals(filterDTO.getStatus()))
+                .filter(estate -> filterDTO.getEstateType() == null || estate.getEstateType().equals(filterDTO.getEstateType()))
                 .filter(estate -> filterDTO.getOwnerId() == null || estate.getOwner().getId().equals(filterDTO.getOwnerId()))
                 .filter(estate -> filterDTO.getMinPrice() == null || estate.getPrice() >= filterDTO.getMinPrice())
                 .filter(estate -> filterDTO.getMaxPrice() == null || estate.getPrice() <= filterDTO.getMaxPrice())

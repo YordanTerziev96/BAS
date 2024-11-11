@@ -19,7 +19,6 @@ public enum EstateStatus {
         try {
             return EstateStatus.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e) {
-            // Generate a parameterized exception message
             String acceptedValues = Arrays.stream(EstateStatus.values())
                     .map(EstateStatus::toValue)
                     .collect(Collectors.joining(", "));

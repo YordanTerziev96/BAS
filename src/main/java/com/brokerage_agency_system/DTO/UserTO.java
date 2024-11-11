@@ -13,6 +13,7 @@ public class UserTO {
 
     private String phone;
 
-    private String description;
+    private String fullName;
 
+    private boolean enabled;
 }

@@ -44,7 +44,8 @@ public class User {
     @NotBlank(message = "Phone cannot be null")
     private String phone;
 
-    private String description;
+    @NotBlank(message = "Full name cannot be null")
+    private String fullName;
 
     private boolean enabled;
 

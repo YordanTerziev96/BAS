@@ -12,13 +12,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     private final UserValidator validator;
@@ -44,9 +47,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<?> updateUser(@PathVariable String username, @Valid @RequestBody UserTO userTO) {
-        var validatedUser = validator.validateForUpdate(username, userTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable String id, @Valid @RequestBody UserTO userTO) {
+        var validatedUser = validator.validateForUpdate(id, userTO);
         User updatedUser = userService.updateUser(userTO, validatedUser);
         return ResponseEntity.ok(updatedUser);
     }
@@ -56,6 +59,8 @@ public class UserController {
 
         var existingUser = validator.validateForDelete(userId);
         userService.deleteUser(existingUser);
-        return ResponseEntity.accepted().body("Deleted user with id: " + userId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Deleted user with id: " + userId);
+        return ResponseEntity.accepted().body(response);
     }
 }

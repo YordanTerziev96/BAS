@@ -32,14 +32,18 @@ public class UserService {
                 .username(userTO.getUsername())
                 .password(encodedPassword)
                 .phone(userTO.getPhone())
-                .email(userTO.getEmail()).build();
+                .email(userTO.getEmail())
+                .enabled(true)
+                .fullName(userTO.getFullName())
+                .build();
         return userRepository.save(user);
     }
 
     public User updateUser(UserTO userTO, User user) {
-        user.setDescription(userTO.getDescription());
+        user.setFullName(userTO.getFullName());
         user.setEmail(userTO.getEmail());
         user.setPhone(userTO.getPhone());
+        user.setEnabled(userTO.isEnabled());
 
         return userRepository.save(user);
     }

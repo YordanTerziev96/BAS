@@ -30,13 +30,13 @@ public class UserValidator {
         }
     }
 
-    public User validateForUpdate(@NotNull String username, @NotNull UserTO userTO) {
-        if (username.isBlank() || userTO == null) {
+    public User validateForUpdate(@NotNull String userId, @NotNull UserTO userTO) {
+        if (userId.isBlank() || userTO == null) {
             throw new NullPointerException("Empty object");
         }
-        var existingUser = repository.findByUsername(username);
+        var existingUser = repository.findById(Long.valueOf(userId));
         if (existingUser.isEmpty()) {
-            throw new NoSuchElementException("There is no such user with username: " + username);
+            throw new NoSuchElementException("There is no such user with id: " + userId);
         }
         return existingUser.get();
     }
