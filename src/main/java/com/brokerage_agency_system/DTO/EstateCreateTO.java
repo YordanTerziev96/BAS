@@ -39,6 +39,9 @@ public class EstateCreateTO {
     @NotBlank(message = "Postal code cannot be none")
     private String postalCode;
 
+    @NotBlank(message = "Neighbourhood cannot be none")
+    private String neighbourhoodLatin;
+
     private List<Image> images;
 
 }

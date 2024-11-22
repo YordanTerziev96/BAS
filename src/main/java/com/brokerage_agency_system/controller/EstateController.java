@@ -99,8 +99,8 @@ public class EstateController {
         return estateService.getAllOwners();
     }
 
-    @GetMapping("/owner")
-    public ResponseEntity<?> getOwner(@RequestParam String ownerId) {
+    @GetMapping("/owners/{ownerId}")
+    public ResponseEntity<?> getOwner(@PathVariable String ownerId) {
         var owner = estateService.getOwnerById(ownerId);
 
         return owner.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -113,7 +113,7 @@ public class EstateController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOwner);
     }
 
-    @PutMapping("/owner/{ownerId}")
+    @PutMapping("/owners/{ownerId}")
     public ResponseEntity<?> updateOwner(@PathVariable String ownerId, @Valid @RequestBody OwnerCreateTO ownerCreateTO) throws OwnerNotFoundException {
         var validateOwner = validator.validateForUpdateOwner(ownerId, ownerCreateTO);
         var updateOwner = estateService.updateOwner(validateOwner, ownerCreateTO);

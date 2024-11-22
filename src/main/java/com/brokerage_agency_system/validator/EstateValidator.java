@@ -11,13 +11,16 @@ import com.brokerage_agency_system.exception.OwnerNotFoundException;
 import com.brokerage_agency_system.exception.UserNotFoundException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.model.Image;
+import com.brokerage_agency_system.model.Location;
 import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Component
@@ -40,16 +43,25 @@ public class EstateValidator {
         if (existingOwner.isEmpty()) {
             throw new OwnerNotFoundException("There is no such owner with id: " + estateCreateTO.getOwnerId());
         }
-        var location = locationRepository.findByPostalCode(estateCreateTO.getPostalCode());
+
+        var location = getLocation(estateCreateTO.getPostalCode(), estateCreateTO.getNeighbourhoodLatin());
         if (location.isEmpty()) {
-            throw new LocationNotFoundException("There is no such town with postal code: " + estateCreateTO.getPostalCode());
+            throw new LocationNotFoundException("There is no such town/neighbourhood with postal code: " + estateCreateTO.getPostalCode());
         }
 
         return Estate.builder()
                 .user(existingUser.get())
                 .owner(existingOwner.get())
-                .location(location.get())
+                .location(location.get(0))
                 .build();
+    }
+
+    public List<Location> getLocation(String postalCode, String neighbourhoodLatin) {
+        if(postalCode != null && neighbourhoodLatin != null) {
+            String cleanedNeighbourhoodName = neighbourhoodLatin.replaceFirst("^g\\.k\\.\\s*", "");
+            return locationRepository.findByPostalCodeAndNeighbourhoodLatinContaining(postalCode, cleanedNeighbourhoodName);
+        }
+        return Collections.emptyList();
     }
 
     public void validateForCreateOwner(OwnerCreateTO createTO) throws OwnerAlreadyExistsException {
@@ -91,12 +103,14 @@ public class EstateValidator {
             estate.get().setOwner(existingOwner.get());
         }
 
-        if (estateTO.getPostalCode() != null) {
-            var location = locationRepository.findByPostalCode(estateTO.getPostalCode());
+
+        if (estateTO.getPostalCode() != null && estateTO.getNeighbourhoodLatin() != null) {
+            String cleanedNeighbourhoodName = estateTO.getNeighbourhoodLatin().replaceFirst("^g\\.k\\.\\s*", "");
+            var location = locationRepository.findByPostalCodeAndNeighbourhoodLatinContaining(estateTO.getPostalCode(), cleanedNeighbourhoodName);
             if (location.isEmpty()) {
                 throw new LocationNotFoundException("There is no such town with postal code: " + estateTO.getPostalCode());
             }
-            estate.get().setLocation(location.get());
+            estate.get().setLocation(location.get(0));
         }
 
         return estate.get();

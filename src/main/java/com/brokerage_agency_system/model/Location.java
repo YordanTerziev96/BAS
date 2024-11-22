@@ -24,4 +24,7 @@ public class Location {
 
     @Column(nullable = false)
     private String neighbourhood;
+
+    @Column(nullable = false)
+    private String neighbourhoodLatin;
 }
