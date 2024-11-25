@@ -46,7 +46,10 @@ public class EstateValidator {
 
         var location = getLocation(estateCreateTO.getPostalCode(), estateCreateTO.getNeighbourhoodLatin());
         if (location.isEmpty()) {
-            throw new LocationNotFoundException("There is no such town/neighbourhood with postal code: " + estateCreateTO.getPostalCode());
+            throw new LocationNotFoundException(
+                    String.format("There is no such town/neighbourhood with postal code: %s and neighbourhood: %s",
+                            estateCreateTO.getPostalCode(), estateCreateTO.getNeighbourhoodLatin())
+            );
         }
 
         return Estate.builder()
@@ -57,7 +60,7 @@ public class EstateValidator {
     }
 
     public List<Location> getLocation(String postalCode, String neighbourhoodLatin) {
-        if(postalCode != null && neighbourhoodLatin != null) {
+        if (postalCode != null && neighbourhoodLatin != null) {
             String cleanedNeighbourhoodName = neighbourhoodLatin.replaceFirst("^g\\.k\\.\\s*", "");
             return locationRepository.findByPostalCodeAndNeighbourhoodLatinContaining(postalCode, cleanedNeighbourhoodName);
         }
