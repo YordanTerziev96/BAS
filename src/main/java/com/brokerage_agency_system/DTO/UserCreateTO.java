@@ -37,4 +37,6 @@ public class UserCreateTO {
     @NotBlank(message = "Full name cannot be null")
     private String fullName;
 
+    private byte[] image;
+
 }

@@ -1,15 +1,6 @@
 package com.brokerage_agency_system.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,6 +37,11 @@ public class User {
 
     @NotBlank(message = "Full name cannot be null")
     private String fullName;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "image", nullable = false)
+    private byte[] image;
 
     private boolean enabled;
 
