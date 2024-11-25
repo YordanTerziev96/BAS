@@ -1,15 +1,19 @@
 package com.brokerage_agency_system.service;
 
+import com.brokerage_agency_system.DTO.UserDTO;
 import com.brokerage_agency_system.model.User;
 import com.brokerage_agency_system.DTO.UserCreateTO;
 import com.brokerage_agency_system.DTO.UserTO;
 import com.brokerage_agency_system.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -21,8 +25,29 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
+
+        List<UserDTO> userDTOS = new ArrayList<>();
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"))) {
+            return users.stream()
+                    .map(user -> new UserDTO(user.getFullName(), user.getImage(), user.isEnabled()))
+                    .collect(Collectors.toList());
+        } else {
+            return users.stream()
+                    .map(user -> new UserDTO(
+                            user.getId(),
+                            user.getUsername(),
+                            user.getEmail(),
+                            user.getPhone(),
+                            user.getFullName(),
+                            user.isEnabled(),
+                            user.getImage())
+                    )
+                    .collect(Collectors.toList());
+        }
     }
 
     public User saveUser(UserCreateTO userTO) {

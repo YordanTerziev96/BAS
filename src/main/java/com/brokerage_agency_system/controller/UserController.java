@@ -1,5 +1,6 @@
 package com.brokerage_agency_system.controller;
 
+import com.brokerage_agency_system.DTO.UserDTO;
 import com.brokerage_agency_system.model.User;
 import com.brokerage_agency_system.DTO.UserCreateTO;
 import com.brokerage_agency_system.DTO.UserTO;
@@ -36,8 +37,8 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
