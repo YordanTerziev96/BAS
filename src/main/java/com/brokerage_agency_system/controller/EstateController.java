@@ -57,6 +57,9 @@ public class EstateController {
         return estateService.getAllEstates();
     }
 
+    @GetMapping("/neighbourhoods")
+    public List<String> getAllNeighbourhoods() { return estateService.getAllNeighbourhoods(); }
+
     @GetMapping("/{estateId}")
     public ResponseEntity<?> getEstate(@PathVariable String estateId) {
         var estate = estateService.getEstateById(estateId);

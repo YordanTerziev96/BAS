@@ -7,9 +7,11 @@ import com.brokerage_agency_system.exception.InvalidFileTypeException;
 import com.brokerage_agency_system.model.Estate;
 import com.brokerage_agency_system.DTO.EstateCreateTO;
 import com.brokerage_agency_system.model.Image;
+import com.brokerage_agency_system.model.Location;
 import com.brokerage_agency_system.model.Owner;
 import com.brokerage_agency_system.repository.EstateRepository;
 import com.brokerage_agency_system.repository.ImageRepository;
+import com.brokerage_agency_system.repository.LocationRepository;
 import com.brokerage_agency_system.repository.OwnerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class EstateService {
     private final EstateRepository estateRepository;
     private final OwnerRepository ownerRepository;
     private final ImageRepository imageRepository;
+    private final LocationRepository locationRepository;
 
     public List<Estate> getAllEstates() {
         return estateRepository.findAll();
@@ -131,5 +134,12 @@ public class EstateService {
     public void deleteEstate(Estate estateToDelete) {
         imageRepository.deleteAll(estateToDelete.getImages());
         estateRepository.delete(estateToDelete);
+    }
+
+    public List<String> getAllNeighbourhoods() {
+        var allLocations = locationRepository.findAll();
+        return allLocations.stream()
+                .map(Location::getNeighbourhood)
+                .collect(Collectors.toList());
     }
 }

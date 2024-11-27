@@ -62,7 +62,7 @@ public class EstateValidator {
     public List<Location> getLocation(String postalCode, String neighbourhoodLatin) {
         if (postalCode != null && neighbourhoodLatin != null) {
             String cleanedNeighbourhoodName = neighbourhoodLatin.replaceFirst("^g\\.k\\.\\s*", "");
-            return locationRepository.findByPostalCodeAndNeighbourhoodLatinContaining(postalCode, cleanedNeighbourhoodName);
+            return locationRepository.findByPostalCodeAndNeighbourhood(postalCode, cleanedNeighbourhoodName);
         }
         return Collections.emptyList();
     }
@@ -109,9 +109,11 @@ public class EstateValidator {
 
         if (estateTO.getPostalCode() != null && estateTO.getNeighbourhoodLatin() != null) {
             String cleanedNeighbourhoodName = estateTO.getNeighbourhoodLatin().replaceFirst("^g\\.k\\.\\s*", "");
-            var location = locationRepository.findByPostalCodeAndNeighbourhoodLatinContaining(estateTO.getPostalCode(), cleanedNeighbourhoodName);
+            cleanedNeighbourhoodName = cleanedNeighbourhoodName.replaceFirst("^ж\\.к\\.\\s*", "");
+            var location = locationRepository.findByPostalCodeAndNeighbourhood(estateTO.getPostalCode(), cleanedNeighbourhoodName);
             if (location.isEmpty()) {
-                throw new LocationNotFoundException("There is no such town with postal code: " + estateTO.getPostalCode());
+                throw new LocationNotFoundException(String.format("There is no such town/neighbourhood with postal code: %s and neighbourhood: %s",
+                        estateTO.getPostalCode(), estateTO.getNeighbourhoodLatin()));
             }
             estate.get().setLocation(location.get(0));
         }
